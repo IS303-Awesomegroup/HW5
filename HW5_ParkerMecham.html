@@ -1,0 +1,151 @@
+<!--Parker Mecham-->
+<!--This function accesses the 2 inputs games and teamName and grabs 
+their value and stores it to JavaScript variables.
+After finishing the logic within the function you 
+assign the variable output to the html p tag with the 
+id (or name) of outputGames using the innerHTML attribute 
+for the html tag.
+
+Here is the logic I want you to write within your JavaScript 
+playGame function. You should retrieve the contents of the games 
+text box and convert it to an integer since the data is a string. 
+You should also retrieve the contents of the teamName text box. 
+This has been done for you already in the html file.
+
+I want you to use the number of games from the text box and use a loop 
+to play the number of games. Your team that was entered in the text box 
+will begin at home. Then, your team will switch between being at home 
+and visiting with each iteration of the loop. For example, Game1: home, 
+Game2: visiting, Game3: home, etc.
+
+You will still generate random numbers for each of the teams from 0 to 100.
+However, whomever is the home team will get a 5 point bonus on their score
+within the loop.  If there is a tie, you will play an overtime that 
+generates a new random number score up to 15 points. This score will be 
+added to the previous score. Do NOT add the extra bonus of 5 points for 
+home teams during the overtime portion. If there is another tie, do 
+another overtime period generating 2 new random numbers and adding it 
+to the total score. Keep doing this until there is no tie. When the game
+is over you will store the team name and scores for each team and if 
+there was an overtime period. You will show your team name, team score,
+your opponent’s score, the number of overtime period(s) – don’t display 
+if there wasn’t one, and whether your team won or lost. 
+ -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            function playGame()
+            {
+                //pulling variables from the boxes
+                var numGames = parseInt(document.getElementById("games").value);
+                var myTeam = document.getElementById("teamName").value;
+                var output = "";
+
+                //Declaring Variables
+
+                //score variables
+                var myTeamScore;
+                var oppScore;
+                var teamWins = 0;
+                var isHome;
+
+                //output variables
+                var scoreOutput;
+                var overTimeCount = 0;
+                var winPercent;
+                var recordOutput;
+                
+                //Starts the team at home
+                isHome = true;
+
+                //This loop runs the season
+                if(numGames > 0)
+                {
+                    for (var iCount = 0; iCount < numGames; iCount++) 
+                    {
+                        
+                        //Determines home court advantage 
+
+                        /*if(isHome == true)
+                        {
+                            myTeamScore = 5;
+                            isHome = false;
+                        }
+                        else 
+                        {
+                            myTeamScore = 0;
+                            isHome = true;
+                        }
+                        */
+                        switch(isHome)
+                        {
+                            case true : 
+                            myTeamScore = 5;
+                            isHome = false;
+                            break;
+
+                            default :
+                            myTeamScore = 0;
+                            isHome = true;
+                        }
+
+                        //Generates score of each team
+                        myTeamScore = myTeamScore + Math.floor(Math.random()*101);
+                        oppScore = Math.floor(Math.random()*101);
+
+                        //Overtime tie breaker
+                        while(myTeamScore == oppScore)
+                        {
+                            myTeamScore = myTeamScore + Math.floor(Math.random()*16);
+                            oppScore = oppScore + Math.floor(Math.random()*16);
+                            overTimeCount += 1;
+                        }
+                        
+                        //output
+                        output += myTeam + ": " + myTeamScore + " - " + oppScore;  
+                        
+                        //Checks whether an overtime game was played and resets the overtime counter
+                        if(overTimeCount > 0)
+                        {
+                            output += " with " + overTimeCount + " OT ";
+                            overTimeCount = 0;
+                        }
+                        //Records the win or loss 
+                        if(myTeamScore > oppScore)
+                        {
+                            teamWins += 1;
+                            output += " and wins<br>";
+                        }  
+                        else 
+                        {
+                            output += " and loses<br>";
+                        } 
+                    }
+                    //Calculate the win percentage 
+                    //Assign the contents of the output variable to the html tag outputGames
+                    winPercent = Number((teamWins / numGames) * 100).toFixed(1);
+                    output += "<br>" + myTeam + " record is " + teamWins + "-" + (numGames - teamWins) + " with a winning percent of " + winPercent; 
+                } 
+
+                else 
+                {
+                    output = "Invalid number of games";
+                }
+
+                document.getElementById("outputGames").innerHTML = output;
+            }
+            
+        </script>
+
+        <title>
+            Welcome to March Madness
+        </title>
+    </head>
+    <body>
+        Enter your team name: <input type="text" name="teamName" id="teamName"><br><br>
+        Number of games: <input type="text" name="games" id="games"><br><br>
+        <button type="button" onclick="playGame()">Start Season</button><br>
+        <p id="outputGames"></p>
+    </body>
+</html>
